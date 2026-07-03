@@ -1,5 +1,5 @@
-import { Identity, SphereNetwork, Wallet } from '../mocks/sphere-sdk.js';
-import type { PaymentRequest } from '../mocks/sphere-sdk.js';
+import { Identity, SphereNetwork, Wallet } from '../mocks/sphere-sdk';
+import type { PaymentRequest } from '../mocks/sphere-sdk';
 
 export class ConsumerAgent {
   public identity: Identity;

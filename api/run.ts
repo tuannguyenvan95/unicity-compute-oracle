@@ -1,5 +1,5 @@
-import { ProviderAgent } from '../src/agent/provider.js';
-import { ConsumerAgent } from '../src/agent/consumer.js';
+import { ProviderAgent } from '../src/agent/provider';
+import { ConsumerAgent } from '../src/agent/consumer';
 
 export default async function handler(req: any, res: any) {
   // Initialize Agents for a single cycle

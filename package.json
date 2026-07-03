@@ -1,7 +1,6 @@
 {
   "name": "compute-resource-oracle",
   "version": "1.0.0",
-  "type": "module",
   "description": "Prototype for an Autonomous Compute-Resource Oracle & P2P Settlement System for the Unicity Testnet",
   "main": "src/index.js",
   "scripts": {

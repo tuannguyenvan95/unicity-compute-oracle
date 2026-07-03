@@ -1,6 +1,6 @@
-import { ComputeOracle } from '../oracle/oracle.js';
-import { Identity, SphereNetwork, Wallet } from '../mocks/sphere-sdk.js';
-import type { PaymentRequest } from '../mocks/sphere-sdk.js';
+import { ComputeOracle } from '../oracle/oracle';
+import { Identity, SphereNetwork, Wallet } from '../mocks/sphere-sdk';
+import type { PaymentRequest } from '../mocks/sphere-sdk';
 
 export class ProviderAgent {
   public identity: Identity;
