@@ -6,6 +6,9 @@
   "scripts": {
     "start": "ts-node src/index.ts"
   },
+  "engines": {
+    "node": "20.x"
+  },
   "keywords": [],
   "author": "",
   "license": "ISC",
