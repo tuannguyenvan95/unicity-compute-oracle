@@ -1,28 +1,90 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Compute Oracle Dashboard</title>
-  <link rel="preconnect" href="https://fonts.googleapis.com" />
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet" />
-  <link rel="stylesheet" href="/styles.css" />
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Compute Oracle Network</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;700&family=Outfit:wght@300;500;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="/styles.css">
 </head>
 <body>
-  <main class="container">
-    <h1 class="title">Compute Oracle Network</h1>
-    <p class="subtitle">Autonomous compute telemetry & P2P settlement on Unicity Testnet</p>
-    <button id="runBtn" class="run-btn">Run Cycle</button>
-    <div id="result" class="result hidden">
-      <pre id="jsonOutput" class="json-output"></pre>
+  <div class="background-grid"></div>
+  
+  <div class="dashboard">
+    <header class="header panel">
+      <h1>Compute Oracle Network</h1>
+      <p>Autonomous Telemetry & P2P Settlement // Unicity Testnet</p>
+    </header>
+
+    <div class="main-grid">
+      <!-- Controls -->
+      <section class="panel controls-panel">
+        <h2>System Control</h2>
+        <div class="control-actions">
+          <button id="runBtn" class="cyber-btn">
+            <span class="btn-text">INITIATE CYCLE</span>
+            <span class="btn-glitch"></span>
+          </button>
+        </div>
+        <div class="status-indicator">
+          <div class="status-dot" id="statusDot"></div>
+          <span id="statusText">SYSTEM IDLE</span>
+        </div>
+      </section>
+
+      <!-- Telemetry -->
+      <section class="panel telemetry-panel">
+        <h2>Live Telemetry</h2>
+        <div class="metric">
+          <div class="metric-header">
+            <span>CPU Load</span>
+            <span id="cpuValue">0%</span>
+          </div>
+          <div class="progress-bar"><div class="progress-fill" id="cpuBar" style="width: 0%"></div></div>
+        </div>
+        <div class="metric">
+          <div class="metric-header">
+            <span>GPU Load</span>
+            <span id="gpuValue">0%</span>
+          </div>
+          <div class="progress-bar"><div class="progress-fill" id="gpuBar" style="width: 0%"></div></div>
+        </div>
+        <div class="metric">
+          <div class="metric-header">
+            <span>Bandwidth</span>
+            <span id="bwValue">0 Mbps</span>
+          </div>
+          <div class="progress-bar"><div class="progress-fill" id="bwBar" style="width: 0%"></div></div>
+        </div>
+      </section>
+
+      <!-- Ledger -->
+      <section class="panel ledger-panel">
+        <h2>P2P Ledger</h2>
+        <div class="ledger-cards">
+          <div class="ledger-card provider">
+            <h3>Provider (node_operator_01)</h3>
+            <div class="balance"><span id="providerBalance">0.0000</span> UTKN</div>
+          </div>
+          <div class="ledger-card consumer">
+            <h3>Consumer (ai_job_runner)</h3>
+            <div class="balance"><span id="consumerBalance">20.0000</span> UTKN</div>
+          </div>
+        </div>
+      </section>
+
+      <!-- Transaction Feed -->
+      <section class="panel feed-panel">
+        <h2>Transaction Feed</h2>
+        <div class="feed-container" id="feedContainer">
+          <div class="feed-item system">System initialized. Awaiting cycle initiation...</div>
+        </div>
+      </section>
     </div>
-    <footer class="footer">
-      <a href="https://github.com/tuannguyenvan95/unicity-compute-oracle" target="_blank">GitHub Repo</a>
-      &nbsp;|&nbsp;
-      <a href="https://unicity-compute-oracle.vercel.app/api/run" target="_blank">API Endpoint</a>
-    </footer>
-  </main>
+  </div>
+
   <script src="/script.js"></script>
 </body>
 </html>
