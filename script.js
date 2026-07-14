@@ -309,27 +309,57 @@ connectWalletBtn.addEventListener('click', () => {
 
 // Select Wallet Option
 walletOptions.forEach(btn => {
-    btn.addEventListener('click', (e) => {
+    btn.addEventListener('click', async (e) => {
         const walletName = btn.getAttribute('data-wallet');
         const networkName = btn.getAttribute('data-network');
         
         // Show loading state
         const originalHtml = btn.innerHTML;
-        btn.innerHTML = `<div class="flex items-center justify-center w-full py-2"><i class="fa-solid fa-circle-notch fa-spin text-cyber-cyan mr-3"></i><span class="text-white font-bold text-sm">Connecting...</span></div>`;
+        btn.innerHTML = `<div class="flex items-center justify-center w-full py-2"><i class="fa-solid fa-circle-notch fa-spin text-cyber-cyan mr-3"></i><span class="text-white font-bold text-sm">Waiting for signature...</span></div>`;
         
-        setTimeout(() => {
+        try {
+            let realAddress = null;
+
+            if (walletName === 'MetaMask') {
+                if (typeof window.ethereum !== 'undefined') {
+                    const accounts = await window.ethereum.request({ method: 'eth_requestAccounts' });
+                    realAddress = accounts[0];
+                } else {
+                    alert('MetaMask extension is not installed or not detected!');
+                    throw new Error('No MetaMask');
+                }
+            } else if (walletName === 'Phantom') {
+                if (window.solana && window.solana.isPhantom) {
+                    const resp = await window.solana.connect();
+                    realAddress = resp.publicKey.toString();
+                } else {
+                    alert('Phantom extension is not installed or not detected!');
+                    throw new Error('No Phantom');
+                }
+            } else {
+                // Fallback for Unicity Native Wallet (Simulated)
+                await new Promise(resolve => setTimeout(resolve, 1500));
+                realAddress = getFakeAddress();
+            }
+
             // Success connected
             isWalletConnected = true;
             dropdownNetwork.textContent = networkName;
             
+            // Format address
+            const displayAddress = realAddress.substring(0, 6) + '...' + realAddress.substring(realAddress.length - 4);
+
             // Update Nav Button
             walletIcon.className = 'fa-solid fa-circle text-green-400 text-[10px] mr-2 animate-pulse';
-            walletText.textContent = getFakeAddress();
+            walletText.textContent = displayAddress;
             walletText.className = 'font-mono text-white tracking-wider';
             
             closeModal();
+        } catch (err) {
+            console.error('Wallet connection rejected or failed:', err);
+        } finally {
             btn.innerHTML = originalHtml; // Reset for next time
-        }, 1500);
+        }
     });
 });
 
