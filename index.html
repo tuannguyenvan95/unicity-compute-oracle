@@ -1,90 +1,192 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" class="dark">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Compute Oracle Network</title>
-  <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;700&family=Outfit:wght@300;500;700&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="/styles.css">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Compute Oracle Explorer | Unicity Testnet</title>
+    <!-- Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700&family=JetBrains+Mono:wght@400;700&display=swap" rel="stylesheet">
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            darkMode: 'class',
+            theme: {
+                extend: {
+                    colors: {
+                        cyber: {
+                            bg: '#050505',
+                            panel: 'rgba(15, 23, 42, 0.6)',
+                            border: 'rgba(56, 189, 248, 0.2)',
+                            cyan: '#00F0FF',
+                            orange: '#FF3B00',
+                            purple: '#B026FF',
+                        }
+                    },
+                    fontFamily: {
+                        sans: ['Inter', 'sans-serif'],
+                        mono: ['JetBrains Mono', 'monospace'],
+                    }
+                }
+            }
+        }
+    </script>
+    <!-- Chart.js -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <!-- FontAwesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- Custom CSS -->
+    <link rel="stylesheet" href="/styles.css">
 </head>
-<body>
-  <div class="background-grid"></div>
-  
-  <div class="dashboard">
-    <header class="header panel">
-      <h1>Compute Oracle Network</h1>
-      <p>Autonomous Telemetry & P2P Settlement // Unicity Testnet</p>
-    </header>
+<body class="bg-cyber-bg text-gray-200 font-sans min-h-screen overflow-x-hidden">
+    
+    <!-- Animated Grid Background -->
+    <div class="fixed inset-0 z-0 cyber-grid pointer-events-none"></div>
 
-    <div class="main-grid">
-      <!-- Controls -->
-      <section class="panel controls-panel">
-        <h2>System Control</h2>
-        <div class="control-actions">
-          <button id="runBtn" class="cyber-btn">
-            <span class="btn-text">INITIATE CYCLE</span>
-            <span class="btn-glitch"></span>
-          </button>
+    <!-- Top Navigation -->
+    <nav class="relative z-10 border-b border-cyber-border bg-cyber-panel backdrop-blur-md px-6 py-4 flex justify-between items-center">
+        <div class="flex items-center space-x-3">
+            <div class="w-8 h-8 rounded bg-gradient-to-br from-cyber-cyan to-cyber-purple flex items-center justify-center shadow-[0_0_15px_rgba(0,240,255,0.5)]">
+                <i class="fa-solid fa-network-wired text-white text-sm"></i>
+            </div>
+            <div>
+                <h1 class="text-xl font-bold text-white tracking-wider">COMPUTE ORACLE <span class="text-cyber-cyan text-sm font-mono ml-2 border border-cyber-cyan px-2 py-0.5 rounded">v2.0</span></h1>
+                <p class="text-xs text-gray-400 font-mono">Unicity Testnet Explorer</p>
+            </div>
         </div>
-        <div class="status-indicator">
-          <div class="status-dot" id="statusDot"></div>
-          <span id="statusText">SYSTEM IDLE</span>
+        <div class="flex items-center space-x-6 text-sm font-mono">
+            <div class="flex items-center"><span class="w-2 h-2 rounded-full bg-green-500 animate-pulse mr-2"></span>Network: <span class="text-white ml-1">ONLINE</span></div>
+            <div class="text-gray-400">Total Nodes: <span class="text-cyber-cyan font-bold" id="totalNodes">24</span></div>
+            <div class="text-gray-400">UTKN Price: <span class="text-cyber-orange font-bold">$1.42</span></div>
+            <button class="bg-cyber-panel border border-cyber-border hover:border-cyber-cyan px-4 py-1.5 rounded transition-all text-cyber-cyan shadow-sm hover:shadow-[0_0_10px_rgba(0,240,255,0.3)]">
+                <i class="fa-solid fa-wallet mr-2"></i>Connect Wallet
+            </button>
         </div>
-      </section>
+    </nav>
 
-      <!-- Telemetry -->
-      <section class="panel telemetry-panel">
-        <h2>Live Telemetry</h2>
-        <div class="metric">
-          <div class="metric-header">
-            <span>CPU Load</span>
-            <span id="cpuValue">0%</span>
-          </div>
-          <div class="progress-bar"><div class="progress-fill" id="cpuBar" style="width: 0%"></div></div>
-        </div>
-        <div class="metric">
-          <div class="metric-header">
-            <span>GPU Load</span>
-            <span id="gpuValue">0%</span>
-          </div>
-          <div class="progress-bar"><div class="progress-fill" id="gpuBar" style="width: 0%"></div></div>
-        </div>
-        <div class="metric">
-          <div class="metric-header">
-            <span>Bandwidth</span>
-            <span id="bwValue">0 Mbps</span>
-          </div>
-          <div class="progress-bar"><div class="progress-fill" id="bwBar" style="width: 0%"></div></div>
-        </div>
-      </section>
+    <!-- Main Content -->
+    <main class="relative z-10 max-w-[1600px] mx-auto p-6 grid grid-cols-12 gap-6">
+        
+        <!-- Left Column: Actions & Marketplace -->
+        <div class="col-span-12 lg:col-span-4 flex flex-col gap-6">
+            
+            <!-- Action Center -->
+            <div class="glass-panel p-5 rounded-xl border border-cyber-border flex flex-col">
+                <h2 class="text-lg font-bold text-white mb-4 flex items-center"><i class="fa-solid fa-terminal text-cyber-orange mr-2"></i>Action Center</h2>
+                
+                <div class="grid grid-cols-1 gap-3">
+                    <button id="runCycleBtn" class="group relative overflow-hidden bg-gradient-to-r from-cyber-orange/20 to-transparent border border-cyber-orange hover:bg-cyber-orange/30 text-cyber-orange font-mono font-bold py-3 px-4 rounded transition-all flex justify-between items-center">
+                        <span class="z-10 relative"><i class="fa-solid fa-bolt mr-2"></i>Execute Compute Job</span>
+                        <i class="fa-solid fa-chevron-right z-10 relative opacity-50 group-hover:opacity-100 group-hover:translate-x-1 transition-all"></i>
+                        <div class="absolute inset-0 bg-gradient-to-r from-cyber-orange/0 via-cyber-orange/10 to-cyber-orange/0 -translate-x-full group-hover:animate-[shimmer_1.5s_infinite]"></div>
+                    </button>
+                    
+                    <button id="deployConsumerBtn" class="bg-cyber-panel border border-cyber-border hover:border-cyber-cyan text-gray-300 hover:text-cyber-cyan font-mono py-2.5 px-4 rounded transition-all flex items-center justify-center">
+                        <i class="fa-solid fa-robot mr-2"></i>Deploy Consumer Agent
+                    </button>
+                    
+                    <button class="bg-cyber-panel border border-cyber-border hover:border-cyber-purple text-gray-300 hover:text-cyber-purple font-mono py-2.5 px-4 rounded transition-all flex items-center justify-center">
+                        <i class="fa-solid fa-coins mr-2"></i>Stake UTKN (Validator)
+                    </button>
+                </div>
+            </div>
 
-      <!-- Ledger -->
-      <section class="panel ledger-panel">
-        <h2>P2P Ledger</h2>
-        <div class="ledger-cards">
-          <div class="ledger-card provider">
-            <h3>Provider (node_operator_01)</h3>
-            <div class="balance"><span id="providerBalance">0.0000</span> UTKN</div>
-          </div>
-          <div class="ledger-card consumer">
-            <h3>Consumer (ai_job_runner)</h3>
-            <div class="balance"><span id="consumerBalance">20.0000</span> UTKN</div>
-          </div>
-        </div>
-      </section>
+            <!-- Service Registry -->
+            <div class="glass-panel p-5 rounded-xl border border-cyber-border flex-grow flex flex-col h-[350px]">
+                <div class="flex justify-between items-end mb-4">
+                    <h2 class="text-lg font-bold text-white flex items-center"><i class="fa-solid fa-server text-cyber-cyan mr-2"></i>Service Registry</h2>
+                    <span class="text-xs text-cyber-cyan font-mono cursor-pointer hover:underline">View All</span>
+                </div>
+                
+                <div class="overflow-y-auto custom-scrollbar flex-grow pr-2">
+                    <table class="w-full text-sm font-mono text-left text-gray-400">
+                        <thead class="text-xs text-gray-500 uppercase sticky top-0 bg-[#0a1120] border-b border-cyber-border">
+                            <tr>
+                                <th class="py-2 px-2 font-normal">Provider Node</th>
+                                <th class="py-2 px-2 font-normal text-right">Capacity</th>
+                                <th class="py-2 px-2 font-normal text-right">Base Price</th>
+                            </tr>
+                        </thead>
+                        <tbody id="providerTableBody" class="divide-y divide-cyber-border/50">
+                            <!-- Populated by JS -->
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+            
+            <!-- Agent Wallets Summary -->
+             <div class="glass-panel p-5 rounded-xl border border-cyber-border flex flex-col">
+                <h2 class="text-lg font-bold text-white mb-4 flex items-center"><i class="fa-solid fa-vault text-cyber-purple mr-2"></i>Agent Wallets</h2>
+                <div class="flex justify-between items-center p-3 bg-black/40 rounded border border-cyber-border/50 mb-3">
+                    <div class="flex items-center">
+                        <i class="fa-solid fa-microchip text-gray-400 text-lg mr-3 w-5 text-center"></i>
+                        <div>
+                            <div class="text-xs text-gray-500 font-mono">Provider Balance</div>
+                            <div class="text-sm font-bold text-white font-mono" id="valProviderBalance">0.0000 UTKN</div>
+                        </div>
+                    </div>
+                </div>
+                <div class="flex justify-between items-center p-3 bg-black/40 rounded border border-cyber-border/50">
+                    <div class="flex items-center">
+                        <i class="fa-solid fa-brain text-cyber-orange text-lg mr-3 w-5 text-center"></i>
+                        <div>
+                            <div class="text-xs text-cyber-orange/70 font-mono">Consumer Balance</div>
+                            <div class="text-sm font-bold text-cyber-orange font-mono" id="valConsumerBalance">20.0000 UTKN</div>
+                        </div>
+                    </div>
+                </div>
+             </div>
 
-      <!-- Transaction Feed -->
-      <section class="panel feed-panel">
-        <h2>Transaction Feed</h2>
-        <div class="feed-container" id="feedContainer">
-          <div class="feed-item system">System initialized. Awaiting cycle initiation...</div>
         </div>
-      </section>
-    </div>
-  </div>
 
-  <script src="/script.js"></script>
+        <!-- Right Column: Telemetry & Ledger -->
+        <div class="col-span-12 lg:col-span-8 flex flex-col gap-6">
+            
+            <!-- Telemetry Chart -->
+            <div class="glass-panel p-5 rounded-xl border border-cyber-border relative">
+                <div class="absolute top-5 right-5 flex items-center space-x-2">
+                    <span class="relative flex h-3 w-3">
+                      <span id="chartPulseOuter" class="animate-ping absolute inline-flex h-full w-full rounded-full bg-cyber-cyan opacity-75 hidden"></span>
+                      <span id="chartPulseInner" class="relative inline-flex rounded-full h-3 w-3 bg-gray-600"></span>
+                    </span>
+                    <span class="text-xs font-mono text-gray-500" id="chartStatusText">IDLE</span>
+                </div>
+                <h2 class="text-lg font-bold text-white mb-1 flex items-center"><i class="fa-solid fa-chart-line text-cyber-cyan mr-2"></i>Live Telemetry Stream</h2>
+                <p class="text-xs text-gray-400 font-mono mb-4">AstridOS Hardware Observability Metrics</p>
+                
+                <div class="w-full h-[280px]">
+                    <canvas id="telemetryChart"></canvas>
+                </div>
+            </div>
+
+            <!-- Transaction Ledger -->
+            <div class="glass-panel p-5 rounded-xl border border-cyber-border flex-grow flex flex-col h-[400px]">
+                <h2 class="text-lg font-bold text-white mb-4 flex items-center"><i class="fa-solid fa-list-check text-green-400 mr-2"></i>P2P Settlement Ledger</h2>
+                
+                <div class="overflow-y-auto custom-scrollbar flex-grow pr-2">
+                    <table class="w-full text-sm font-mono text-left">
+                        <thead class="text-xs text-gray-500 uppercase sticky top-0 bg-[#0a1120] border-b border-cyber-border">
+                            <tr>
+                                <th class="py-3 px-3 font-normal w-1/4">TxHash</th>
+                                <th class="py-3 px-3 font-normal w-1/4">From (Consumer)</th>
+                                <th class="py-3 px-3 font-normal w-1/4">To (Provider)</th>
+                                <th class="py-3 px-3 font-normal text-right">Amount</th>
+                                <th class="py-3 px-3 font-normal text-right">Status</th>
+                            </tr>
+                        </thead>
+                        <tbody id="ledgerTableBody" class="divide-y divide-cyber-border/30">
+                            <!-- Transactions populated here -->
+                            <tr class="text-gray-500">
+                                <td colspan="5" class="py-8 text-center italic">No transactions executed yet. Click 'Execute Compute Job' to begin.</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+
+        </div>
+    </main>
+
+    <script src="/script.js"></script>
 </body>
 </html>
