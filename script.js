@@ -162,18 +162,68 @@ function animateValue(obj, start, end, duration) {
     window.requestAnimationFrame(step);
 }
 
-// --- Action: Deploy Consumer ---
-deployBtn.addEventListener('click', () => {
-    const btnIcon = deployBtn.querySelector('i');
-    btnIcon.className = 'fa-solid fa-circle-notch fa-spin mr-2';
-    setTimeout(() => {
-        btnIcon.className = 'fa-solid fa-check text-green-400 mr-2';
-        deployBtn.innerHTML = `<i class="fa-solid fa-check text-green-400 mr-2"></i>Agent Deployed`;
+// --- Action: Deploy & Stake (Web3 Transactions) ---
+const stakeBtn = document.getElementById('stakeBtn');
+
+async function executeWeb3Transaction(btnElement, actionName, originalHtml, successHtml) {
+    if (!isWalletConnected) {
+        alert('Please connect your wallet first!');
+        return;
+    }
+
+    btnElement.innerHTML = `<i class="fa-solid fa-circle-notch fa-spin mr-2"></i>Waiting for Signature...`;
+    
+    try {
+        if (connectedWalletType === 'MetaMask' && typeof window.ethereum !== 'undefined') {
+            // Dummy transaction: 0 ETH to self
+            const txParams = {
+                to: connectedWalletAddress,
+                from: connectedWalletAddress,
+                value: '0x0',
+                data: '0x1234' // Dummy data
+            };
+            await window.ethereum.request({ method: 'eth_sendTransaction', params: [txParams] });
+        } else if (connectedWalletType === 'Phantom' && window.solana && window.solana.isPhantom) {
+            // Dummy signature request
+            const message = `Sign this message to approve: ${actionName}`;
+            const encodedMessage = new TextEncoder().encode(message);
+            await window.solana.signMessage(encodedMessage, "utf8");
+        } else {
+            // Simulated delay for Unicity Wallet
+            await new Promise(resolve => setTimeout(resolve, 2000));
+        }
+
+        // Success State
+        btnElement.innerHTML = successHtml;
         setTimeout(() => {
-            btnIcon.className = 'fa-solid fa-robot mr-2';
-            deployBtn.innerHTML = `<i class="fa-solid fa-robot mr-2"></i>Deploy Consumer Agent`;
+            btnElement.innerHTML = originalHtml;
+        }, 3000);
+
+    } catch (err) {
+        console.error('Transaction failed/rejected:', err);
+        btnElement.innerHTML = `<i class="fa-solid fa-xmark text-red-500 mr-2"></i>Rejected`;
+        setTimeout(() => {
+            btnElement.innerHTML = originalHtml;
         }, 2000);
-    }, 800);
+    }
+}
+
+deployBtn.addEventListener('click', () => {
+    executeWeb3Transaction(
+        deployBtn, 
+        'Deploy Consumer Agent',
+        `<i class="fa-solid fa-robot mr-2"></i>Deploy Consumer Agent`,
+        `<i class="fa-solid fa-check text-green-400 mr-2"></i>Agent Deployed`
+    );
+});
+
+stakeBtn.addEventListener('click', () => {
+    executeWeb3Transaction(
+        stakeBtn, 
+        'Stake UTKN (Validator)',
+        `<i class="fa-solid fa-coins mr-2"></i>Stake UTKN (Validator)`,
+        `<i class="fa-solid fa-check text-green-400 mr-2"></i>Stake Successful`
+    );
 });
 
 // --- Generate Random TxHash ---
@@ -261,6 +311,8 @@ const walletIcon = document.getElementById('walletIcon');
 const walletText = document.getElementById('walletText');
 
 let isWalletConnected = false;
+let connectedWalletType = null;
+let connectedWalletAddress = null;
 
 // Generate fake address
 function getFakeAddress() {
@@ -344,6 +396,8 @@ walletOptions.forEach(btn => {
 
             // Success connected
             isWalletConnected = true;
+            connectedWalletType = walletName;
+            connectedWalletAddress = realAddress;
             dropdownNetwork.textContent = networkName;
             
             // Format address
