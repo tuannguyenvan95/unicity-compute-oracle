@@ -247,3 +247,106 @@ runBtn.addEventListener('click', async () => {
         startChartSimulation(false); // Back to idle chart
     }
 });
+
+// --- Wallet Connection Logic ---
+const connectWalletBtn = document.getElementById('connectWalletBtn');
+const walletDropdown = document.getElementById('walletDropdown');
+const disconnectWalletBtn = document.getElementById('disconnectWalletBtn');
+const dropdownNetwork = document.getElementById('dropdownNetwork');
+const walletModal = document.getElementById('walletModal');
+const walletModalContent = document.getElementById('walletModalContent');
+const closeModalBtn = document.getElementById('closeModalBtn');
+const walletOptions = document.querySelectorAll('.wallet-option');
+const walletIcon = document.getElementById('walletIcon');
+const walletText = document.getElementById('walletText');
+
+let isWalletConnected = false;
+
+// Generate fake address
+function getFakeAddress() {
+    const chars = '0123456789abcdef';
+    let hash = '0x';
+    for(let i=0; i<40; i++) hash += chars[Math.floor(Math.random() * chars.length)];
+    return hash.substring(0,6) + '...' + hash.substring(38);
+}
+
+// Toggle Modal
+function openModal() {
+    walletModal.classList.remove('hidden');
+    walletModal.classList.add('flex');
+    setTimeout(() => {
+        walletModal.classList.remove('opacity-0');
+        walletModalContent.classList.remove('scale-95');
+        walletModalContent.classList.add('scale-100');
+    }, 10);
+}
+
+function closeModal() {
+    walletModal.classList.add('opacity-0');
+    walletModalContent.classList.remove('scale-100');
+    walletModalContent.classList.add('scale-95');
+    setTimeout(() => {
+        walletModal.classList.add('hidden');
+        walletModal.classList.remove('flex');
+    }, 300);
+}
+
+closeModalBtn.addEventListener('click', closeModal);
+walletModal.addEventListener('click', (e) => {
+    if (e.target === walletModal) closeModal();
+});
+
+// Click Connect Wallet Button
+connectWalletBtn.addEventListener('click', () => {
+    if (isWalletConnected) {
+        // Toggle dropdown if connected
+        walletDropdown.classList.toggle('hidden');
+    } else {
+        // Open modal if disconnected
+        openModal();
+    }
+});
+
+// Select Wallet Option
+walletOptions.forEach(btn => {
+    btn.addEventListener('click', (e) => {
+        const walletName = btn.getAttribute('data-wallet');
+        const networkName = btn.getAttribute('data-network');
+        
+        // Show loading state
+        const originalHtml = btn.innerHTML;
+        btn.innerHTML = `<div class="flex items-center justify-center w-full py-2"><i class="fa-solid fa-circle-notch fa-spin text-cyber-cyan mr-3"></i><span class="text-white font-bold text-sm">Connecting...</span></div>`;
+        
+        setTimeout(() => {
+            // Success connected
+            isWalletConnected = true;
+            dropdownNetwork.textContent = networkName;
+            
+            // Update Nav Button
+            walletIcon.className = 'fa-solid fa-circle text-green-400 text-[10px] mr-2 animate-pulse';
+            walletText.textContent = getFakeAddress();
+            walletText.className = 'font-mono text-white tracking-wider';
+            
+            closeModal();
+            btn.innerHTML = originalHtml; // Reset for next time
+        }, 1500);
+    });
+});
+
+// Disconnect Wallet
+disconnectWalletBtn.addEventListener('click', () => {
+    isWalletConnected = false;
+    walletDropdown.classList.add('hidden');
+    
+    // Revert Nav Button
+    walletIcon.className = 'fa-solid fa-wallet mr-2';
+    walletText.textContent = 'Connect Wallet';
+    walletText.className = ''; 
+});
+
+// Close dropdown when clicking outside
+document.addEventListener('click', (e) => {
+    if (!connectWalletBtn.contains(e.target) && !walletDropdown.contains(e.target)) {
+        walletDropdown.classList.add('hidden');
+    }
+});

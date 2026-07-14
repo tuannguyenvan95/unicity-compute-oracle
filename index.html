@@ -58,9 +58,22 @@
             <div class="flex items-center"><span class="w-2 h-2 rounded-full bg-green-500 animate-pulse mr-2"></span>Network: <span class="text-white ml-1">ONLINE</span></div>
             <div class="text-gray-400">Total Nodes: <span class="text-cyber-cyan font-bold" id="totalNodes">24</span></div>
             <div class="text-gray-400">UTKN Price: <span class="text-cyber-orange font-bold">$1.42</span></div>
-            <button class="bg-cyber-panel border border-cyber-border hover:border-cyber-cyan px-4 py-1.5 rounded transition-all text-cyber-cyan shadow-sm hover:shadow-[0_0_10px_rgba(0,240,255,0.3)]">
-                <i class="fa-solid fa-wallet mr-2"></i>Connect Wallet
-            </button>
+            <div class="relative">
+                <button id="connectWalletBtn" class="bg-cyber-panel border border-cyber-border hover:border-cyber-cyan px-4 py-1.5 rounded transition-all text-cyber-cyan shadow-sm hover:shadow-[0_0_10px_rgba(0,240,255,0.3)] flex items-center">
+                    <i class="fa-solid fa-wallet mr-2" id="walletIcon"></i><span id="walletText">Connect Wallet</span>
+                </button>
+                
+                <!-- Wallet Dropdown (Hidden) -->
+                <div id="walletDropdown" class="hidden absolute right-0 mt-2 w-48 bg-[#0a1120] border border-cyber-border rounded-md shadow-lg overflow-hidden z-50">
+                    <div class="px-4 py-3 border-b border-cyber-border/50">
+                        <p class="text-xs text-gray-400">Connected to</p>
+                        <p class="text-sm font-bold text-cyber-cyan truncate" id="dropdownNetwork">Unicity Testnet</p>
+                    </div>
+                    <button id="disconnectWalletBtn" class="w-full text-left px-4 py-2 text-sm text-red-400 hover:bg-red-500/10 transition-colors flex items-center">
+                        <i class="fa-solid fa-right-from-bracket mr-2"></i> Disconnect
+                    </button>
+                </div>
+            </div>
         </div>
     </nav>
 
@@ -237,6 +250,53 @@
             &copy; 2026 Autonomous Compute-Resource Oracle. All systems nominal.
         </div>
     </footer>
+
+    <!-- Wallet Selection Modal (Hidden) -->
+    <div id="walletModal" class="fixed inset-0 z-50 hidden items-center justify-center bg-black/60 backdrop-blur-sm opacity-0 transition-opacity duration-300">
+        <div class="glass-panel w-full max-w-md rounded-2xl border border-cyber-border p-6 shadow-2xl transform scale-95 transition-transform duration-300" id="walletModalContent">
+            <div class="flex justify-between items-center mb-6 border-b border-cyber-border/30 pb-4">
+                <h2 class="text-xl font-bold text-white"><i class="fa-solid fa-link text-cyber-cyan mr-2"></i> Connect Wallet</h2>
+                <button id="closeModalBtn" class="text-gray-400 hover:text-white transition-colors"><i class="fa-solid fa-xmark text-xl"></i></button>
+            </div>
+            
+            <div class="space-y-3">
+                <button class="wallet-option w-full flex items-center justify-between p-4 rounded-xl border border-cyber-border/50 bg-[#0a1120] hover:border-cyber-cyan hover:bg-cyber-cyan/10 transition-all group" data-wallet="Unicity Native Wallet" data-network="Unicity Testnet">
+                    <div class="flex items-center">
+                        <div class="w-10 h-10 rounded-full bg-gradient-to-br from-cyber-cyan to-cyber-purple flex items-center justify-center mr-4">
+                            <i class="fa-solid fa-network-wired text-white"></i>
+                        </div>
+                        <div class="text-left">
+                            <h3 class="text-white font-bold group-hover:text-cyber-cyan transition-colors">Unicity Wallet</h3>
+                            <p class="text-xs text-gray-500 font-mono">Unicity Testnet</p>
+                        </div>
+                    </div>
+                    <span class="text-xs px-2 py-1 bg-cyber-cyan/20 text-cyber-cyan rounded border border-cyber-cyan/30">Recommended</span>
+                </button>
+
+                <button class="wallet-option w-full flex items-center p-4 rounded-xl border border-cyber-border/50 bg-[#0a1120] hover:border-orange-500 hover:bg-orange-500/10 transition-all group" data-wallet="MetaMask" data-network="Ethereum Sepolia">
+                    <div class="w-10 h-10 rounded-full bg-[#111] flex items-center justify-center mr-4 border border-orange-500/30">
+                        <img src="https://upload.wikimedia.org/wikipedia/commons/3/36/MetaMask_Fox.svg" alt="MetaMask" class="w-6 h-6">
+                    </div>
+                    <div class="text-left">
+                        <h3 class="text-white font-bold group-hover:text-orange-400 transition-colors">MetaMask</h3>
+                        <p class="text-xs text-gray-500 font-mono">Ethereum Sepolia</p>
+                    </div>
+                </button>
+
+                <button class="wallet-option w-full flex items-center p-4 rounded-xl border border-cyber-border/50 bg-[#0a1120] hover:border-purple-500 hover:bg-purple-500/10 transition-all group" data-wallet="Phantom" data-network="Solana Devnet">
+                    <div class="w-10 h-10 rounded-full bg-[#111] flex items-center justify-center mr-4 border border-purple-500/30">
+                        <i class="fa-solid fa-ghost text-purple-500"></i>
+                    </div>
+                    <div class="text-left">
+                        <h3 class="text-white font-bold group-hover:text-purple-400 transition-colors">Phantom</h3>
+                        <p class="text-xs text-gray-500 font-mono">Solana Devnet</p>
+                    </div>
+                </button>
+            </div>
+            
+            <p class="text-center text-xs text-gray-500 mt-6 font-mono">By connecting a wallet, you agree to the Terms of Service.</p>
+        </div>
+    </div>
 
     <script src="/script.js"></script>
 </body>
