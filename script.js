@@ -323,6 +323,28 @@ function getFakeAddress() {
     return hash.substring(0,6) + '...' + hash.substring(38);
 }
 
+// Check local storage on load
+function initWalletState() {
+    const savedType = localStorage.getItem('walletType');
+    const savedAddress = localStorage.getItem('walletAddress');
+    
+    if (savedType && savedAddress) {
+        isWalletConnected = true;
+        connectedWalletType = savedType;
+        connectedWalletAddress = savedAddress;
+        
+        const displayAddress = savedAddress.substring(0, 6) + '...' + savedAddress.substring(savedAddress.length - 4);
+        walletIcon.className = 'fa-solid fa-circle text-green-400 text-[10px] mr-2 animate-pulse';
+        walletText.textContent = displayAddress;
+        walletText.className = 'font-mono text-white tracking-wider';
+        
+        if (savedType === 'MetaMask') dropdownNetwork.textContent = 'Ethereum Sepolia';
+        else if (savedType === 'Phantom') dropdownNetwork.textContent = 'Solana Devnet';
+        else dropdownNetwork.textContent = 'Unicity Testnet';
+    }
+}
+initWalletState();
+
 // Toggle Modal
 function openModal() {
     walletModal.classList.remove('hidden');
@@ -401,6 +423,10 @@ walletOptions.forEach(btn => {
             connectedWalletAddress = realAddress;
             dropdownNetwork.textContent = networkName;
             
+            // Save to LocalStorage
+            localStorage.setItem('walletType', connectedWalletType);
+            localStorage.setItem('walletAddress', connectedWalletAddress);
+
             // Format address
             const displayAddress = realAddress.substring(0, 6) + '...' + realAddress.substring(realAddress.length - 4);
 
@@ -421,7 +447,13 @@ walletOptions.forEach(btn => {
 // Disconnect Wallet
 disconnectWalletBtn.addEventListener('click', () => {
     isWalletConnected = false;
+    connectedWalletType = null;
+    connectedWalletAddress = null;
     walletDropdown.classList.add('hidden');
+    
+    // Clear LocalStorage
+    localStorage.removeItem('walletType');
+    localStorage.removeItem('walletAddress');
     
     // Revert Nav Button
     walletIcon.className = 'fa-solid fa-wallet mr-2';
