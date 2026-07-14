@@ -175,17 +175,18 @@ async function executeWeb3Transaction(btnElement, actionName, originalHtml, succ
     
     try {
         if (connectedWalletType === 'MetaMask' && typeof window.ethereum !== 'undefined') {
-            // Dummy transaction: 0 ETH to self
-            const txParams = {
-                to: connectedWalletAddress,
-                from: connectedWalletAddress,
-                value: '0x0',
-                data: '0x1234' // Dummy data
-            };
-            await window.ethereum.request({ method: 'eth_sendTransaction', params: [txParams] });
+            // Use personal_sign instead of eth_sendTransaction to avoid "insufficient funds for gas" errors
+            const message = `Sign this message to confirm action: ${actionName}\n\nThis is a gas-less signature for the Unicity Compute Oracle Hackathon Demo.`;
+            // hex encode the message
+            const hexMessage = '0x' + Array.from(new TextEncoder().encode(message), byte => byte.toString(16).padStart(2, '0')).join('');
+            
+            await window.ethereum.request({ 
+                method: 'personal_sign', 
+                params: [hexMessage, connectedWalletAddress] 
+            });
         } else if (connectedWalletType === 'Phantom' && window.solana && window.solana.isPhantom) {
             // Dummy signature request
-            const message = `Sign this message to approve: ${actionName}`;
+            const message = `Sign this message to confirm action: ${actionName}\n\nThis is a gas-less signature for the Unicity Compute Oracle Hackathon Demo.`;
             const encodedMessage = new TextEncoder().encode(message);
             await window.solana.signMessage(encodedMessage, "utf8");
         } else {
